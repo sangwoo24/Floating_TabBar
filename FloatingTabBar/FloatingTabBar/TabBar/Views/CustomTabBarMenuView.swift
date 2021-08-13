@@ -15,7 +15,6 @@ class CustomTabBarMenuView: UIView {
     
     // MARK: Properties
     var numberOfTabs: Int = 2
-    
     weak var delegate: CustomTabBarMenuDelegate?
     var tabBarMenuCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()

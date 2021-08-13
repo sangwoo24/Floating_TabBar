@@ -31,7 +31,7 @@ class CustomTabBarHeaderView: UIView {
     // MARK: Init
     override init(frame: CGRect) {
         super.init(frame: .zero)
-        backgroundColor = .lightGray
+        backgroundColor = .white
         setHeaderView()
     }
     

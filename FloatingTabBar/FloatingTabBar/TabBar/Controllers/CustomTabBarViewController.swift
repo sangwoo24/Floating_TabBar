@@ -9,36 +9,6 @@ import UIKit
 
 class CustomTabBarViewController: UIViewController {
     
-    /*
-        headerBackgroundColor
-        headerTextColor
-        titleText
-        subtitleText
-     
-        [title & controller]
-        tabBarMenuTextColor
-        indicatorBackgroundColor
-    */
-    
-    var headerBackgroundColor: UIColor = .white {
-        willSet(color) {
-            tabBarHeaderView.backgroundColor = color
-        }
-    }
-    
-    var headerTextColor: UIColor = .black {
-        willSet(color) {
-            tabBarHeaderView.headerTitle.textColor = color
-            tabBarHeaderView.headerSubTitle.textColor = color
-        }
-    }
-    
-    var titleText: String = "Title" {
-        willSet(text) {
-            tabBarHeaderView.headerTitle.text = text
-        }
-    }
-    
     // MARK: Properties
     var numberOfPages: Int = 2
     var tabBarViewControllers: [UIViewController]? {
@@ -55,6 +25,8 @@ class CustomTabBarViewController: UIViewController {
                 // tapBar
                 tabBarMenuView.numberOfTabs = numberOfPages
                 tabBarMenuView.tabBarMenuCollectionView.reloadData()
+                
+                // TODO: controller title 을 cell 의 title 로
             }
         }
     }
@@ -76,7 +48,7 @@ class CustomTabBarViewController: UIViewController {
         setTabBarHeaderView()
         setTabBarMenuView()
         setTabBarPageView()
-        titleText = "hello"
+        self.tabBarViewControllers = [FirstViewController(), SecondViewController(), ThirdViewController(), ForthViewController()]
     }
     
     // MARK: SetView

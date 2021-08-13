@@ -53,6 +53,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB5DF4BC26C3B68700876446 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				DB669A1A26C24F6C003ABE0B /* Extensions */,
+				DB669A1626C248F4003ABE0B /* Controllers */,
+				DB669A1726C24C65003ABE0B /* Views */,
+				DB669A1F26C2535A003ABE0B /* Cells */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
 		DB669A1626C248F4003ABE0B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -117,11 +128,8 @@
 		DB899DA726C2482900AA360A /* FloatingTabBar */ = {
 			isa = PBXGroup;
 			children = (
+				DB5DF4BC26C3B68700876446 /* TabBar */,
 				DB669A2426C26210003ABE0B /* TestVC */,
-				DB669A1F26C2535A003ABE0B /* Cells */,
-				DB669A1A26C24F6C003ABE0B /* Extensions */,
-				DB669A1726C24C65003ABE0B /* Views */,
-				DB669A1626C248F4003ABE0B /* Controllers */,
 				DB899DBC26C2487300AA360A /* Style */,
 			);
 			path = FloatingTabBar;

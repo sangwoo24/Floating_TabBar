@@ -13,21 +13,22 @@ class CustomTabBarViewController: UIViewController {
     var numberOfPages: Int = 2
     var tabBarViewControllers: [UIViewController]? {
         didSet {
-            // 이미 set 되었는데 옵셔널 바인딩이 의미있는 코드인지?
             if let controller = tabBarViewControllers {
                 numberOfPages = controller.count
-                
-                // indicator
-                tabBarMenuView.tabBarIndicatorViewWidthConstraint.isActive = false
-                tabBarMenuView.tabBarIndicatorViewWidthConstraint = tabBarMenuView.tabBarIndicatorView.widthAnchor.constraint(equalToConstant: tabBarMenuView.frame.width / CGFloat(numberOfPages))
-                tabBarMenuView.tabBarIndicatorViewWidthConstraint.isActive = true
-                
-                // tapBar
                 tabBarMenuView.numberOfTabs = numberOfPages
-                tabBarMenuView.tabBarMenuCollectionView.reloadData()
-                
-                // TODO: controller title 을 cell 의 title 로
+                tabBarMenuView.tabBarIndicatorViewWidthConstraint.constant = tabBarMenuView.frame.width / CGFloat(numberOfPages)
+                tabBarMenuView.tabBarViewControllers = controller
             }
+        }
+    }
+    var tabBarMenuTextColor: UIColor? {
+        willSet(textColor) {
+            tabBarMenuView.tabBarMenuTextColor = textColor
+        }
+    }
+    var tabBarIndicatorBackgroundColor: UIColor? {
+        willSet(backgroundColor) {
+            tabBarMenuView.tabBarIndicatorBackgroundColor = backgroundColor
         }
     }
     
@@ -48,7 +49,6 @@ class CustomTabBarViewController: UIViewController {
         setTabBarHeaderView()
         setTabBarMenuView()
         setTabBarPageView()
-        self.tabBarViewControllers = [FirstViewController(), SecondViewController(), ThirdViewController(), ForthViewController()]
     }
     
     // MARK: SetView

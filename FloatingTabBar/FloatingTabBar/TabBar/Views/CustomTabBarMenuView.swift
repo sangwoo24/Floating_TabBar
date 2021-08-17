@@ -15,6 +15,22 @@ class CustomTabBarMenuView: UIView {
     
     // MARK: Properties
     var numberOfTabs: Int = 2
+    var tabBarViewControllers: [UIViewController]? {
+        didSet {
+            tabBarMenuCollectionView.reloadData()
+        }
+    }
+    var tabBarMenuTextColor: UIColor? {
+        didSet {
+            tabBarMenuCollectionView.reloadData()
+        }
+    }
+    var tabBarIndicatorBackgroundColor: UIColor? {
+        willSet(indicatorBackgroundColor) {
+            tabBarIndicatorView.backgroundColor = indicatorBackgroundColor
+        }
+    }
+    
     weak var delegate: CustomTabBarMenuDelegate?
     var tabBarMenuCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -80,6 +96,14 @@ extension CustomTabBarMenuView: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TabBarMenuCell.reusableIdentifier, for: indexPath) as? TabBarMenuCell else { return UICollectionViewCell() }
+        
+        if let title = tabBarViewControllers?[indexPath.item].title {
+            cell.label.text = title
+        }
+        
+        if let textColor = tabBarMenuTextColor {
+            cell.label.textColor = textColor
+        }
         return cell
     }
     

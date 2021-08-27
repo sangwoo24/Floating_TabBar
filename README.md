@@ -1,4 +1,10 @@
 # Floating TabBar
+
+    1. 구조
+    2. Properties
+    3. 예제
+
+
 <br><br><br>
 
 <div align="center">
@@ -33,5 +39,65 @@
 
 ## 2. Properties
 - tabBarViewControllers: [UIVIewController]
+- tabBarHeaderView: UIView
 - tabBarMenuTextColor: UIColor
 - tabBarIndicatorBackgroundColor: UIColor
+<br><br>
+
+## 3. 예제
+<br>
+
+#### Default TabBar
+
+<div align="center">
+<img src="https://user-images.githubusercontent.com/56511253/131085987-c06e1d5e-ac1c-4b10-9d01-125f59e9c656.gif"></div>
+<br>
+
+```swift
+let tabBar = CustomTabBarViewController()
+
+let firstVC = FirstViewController()
+let secondVC = SecondViewController()
+let thirdVC = ThirdViewController()
+
+firstVC.title = "First"
+secondVC.title = "Second"
+thirdVC.title = "Third"
+
+tabBar.tabBarViewControllers = [firstVC, secondVC, thirdVC]
+```
+- 해당 Tab 의 제목은 ViewController 의 title 로 지정함.
+<br><br><br>
+
+#### HeaderView
+
+<div align="center">
+<img src="https://user-images.githubusercontent.com/56511253/131087453-7bbd6666-50e7-4c30-b0e6-b7a9cf7fd609.png" width = "300"></div>
+
+```swift
+let testView = UIView()
+testView.backgroundColor = .red
+
+let testLabel = UILabel()
+testLabel.text = "Text Label"
+testLabel.textColor = .white
+testLabel.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+testLabel.translatesAutoresizingMaskIntoConstraints = false
+
+testView.addSubview(testLabel)
+testLabel.centerXAnchor.constraint(equalTo: testView.centerXAnchor).isActive = true
+testLabel.centerYAnchor.constraint(equalTo: testView.centerYAnchor).isActive = true
+
+tabBar.tabBarHeaderView = testView
+```
+<br><br>
+#### Tint Color
+
+<div align = "center">
+<img src = "https://user-images.githubusercontent.com/56511253/131104721-7a069040-affd-40c0-9026-d116a6d8fca9.png"></div>
+<br>
+
+```swift
+tabBar.tabBarMenuTextColor = .blue
+tabBar.tabBarIndicatorBackgroundColor = .green
+```

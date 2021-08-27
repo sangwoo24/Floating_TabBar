@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB200A1A26CEA9AD0024CBB9 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB200A1926CEA9AD0024CBB9 /* RootViewController.swift */; };
 		DB669A1926C24C7B003ABE0B /* CustomTabBarHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB669A1826C24C7B003ABE0B /* CustomTabBarHeaderView.swift */; };
 		DB669A1C26C24F96003ABE0B /* NSObject + ReuseableIdentifier .swift in Sources */ = {isa = PBXBuildFile; fileRef = DB669A1B26C24F96003ABE0B /* NSObject + ReuseableIdentifier .swift */; };
 		DB669A1E26C2509B003ABE0B /* CustomTabBarMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB669A1D26C2509B003ABE0B /* CustomTabBarMenuView.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DB200A1926CEA9AD0024CBB9 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		DB669A1826C24C7B003ABE0B /* CustomTabBarHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarHeaderView.swift; sourceTree = "<group>"; };
 		DB669A1B26C24F96003ABE0B /* NSObject + ReuseableIdentifier .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject + ReuseableIdentifier .swift"; sourceTree = "<group>"; };
 		DB669A1D26C2509B003ABE0B /* CustomTabBarMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarMenuView.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				DB5DF4BC26C3B68700876446 /* TabBar */,
 				DB669A2426C26210003ABE0B /* TestVC */,
 				DB899DBC26C2487300AA360A /* Style */,
+				DB200A1926CEA9AD0024CBB9 /* RootViewController.swift */,
 			);
 			path = FloatingTabBar;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 				DB669A2326C25D33003ABE0B /* TabBarPageCell.swift in Sources */,
 				DB669A1C26C24F96003ABE0B /* NSObject + ReuseableIdentifier .swift in Sources */,
 				DB899DAD26C2482900AA360A /* CustomTabBarViewController.swift in Sources */,
+				DB200A1A26CEA9AD0024CBB9 /* RootViewController.swift in Sources */,
 				DB669A2126C2538D003ABE0B /* TabBarMenuCell.swift in Sources */,
 				DB899DA926C2482900AA360A /* AppDelegate.swift in Sources */,
 				DB669A2C26C2622D003ABE0B /* ForthViewController.swift in Sources */,

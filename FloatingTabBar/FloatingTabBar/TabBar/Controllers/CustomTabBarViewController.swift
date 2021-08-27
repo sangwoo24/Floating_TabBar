@@ -1,8 +1,8 @@
 //
-//  ViewController.swift
-//  FloatingTabBar
+//  CustomTabBarViewController.swift
+//  N-Split-Bill
 //
-//  Created by 석상우 on 2021/08/10.
+//  Created by 석상우 on 2021/08/19.
 //
 
 import UIKit
@@ -11,6 +11,7 @@ class CustomTabBarViewController: UIViewController {
     
     // MARK: Properties
     var numberOfPages: Int = 2
+    var tabBarMenuViewTopAnchor = NSLayoutConstraint()
     var tabBarViewControllers: [UIViewController]? {
         didSet {
             if let controller = tabBarViewControllers {
@@ -18,6 +19,7 @@ class CustomTabBarViewController: UIViewController {
                 tabBarMenuView.numberOfTabs = numberOfPages
                 tabBarMenuView.tabBarIndicatorViewWidthConstraint.constant = tabBarMenuView.frame.width / CGFloat(numberOfPages)
                 tabBarMenuView.tabBarViewControllers = controller
+                tabBarMenuView.tabBarMenuCollectionView.reloadData()
             }
         }
     }
@@ -31,14 +33,24 @@ class CustomTabBarViewController: UIViewController {
             tabBarMenuView.tabBarIndicatorBackgroundColor = backgroundColor
         }
     }
-    
-    var tabBarHeaderView = CustomTabBarHeaderView()
-    lazy var tabBarMenuView = CustomTabBarMenuView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
+    var tabBarHeaderView: UIView? {
+        willSet(header) {
+            if let previousHeaderView = tabBarHeaderView {
+                previousHeaderView.removeFromSuperview()
+            }
+            guard let header = header else { return }
+            setHeaderView(header: header)
+        }
+    }
+    var tabBarMenuView = CustomTabBarMenuView()
     var tabBarPageView: UICollectionView = {
         let collectionViewLayout = UICollectionViewFlowLayout()
         collectionViewLayout.scrollDirection = .horizontal
-        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: 100, height: 100), collectionViewLayout: collectionViewLayout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.isPagingEnabled = true
+        collectionView.isScrollEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
     
@@ -46,59 +58,73 @@ class CustomTabBarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setTabBarHeaderView()
         setTabBarMenuView()
         setTabBarPageView()
     }
     
-    // MARK: SetView
-    func setTabBarHeaderView() {
-        tabBarHeaderView.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(tabBarHeaderView)
-        tabBarHeaderView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tabBarHeaderView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        tabBarHeaderView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        tabBarHeaderView.heightAnchor.constraint(equalToConstant: 180).isActive = true
-    }
-    
+    // MARK: - SetView
     func setTabBarMenuView() {
         tabBarMenuView.delegate = self
         tabBarMenuView.translatesAutoresizingMaskIntoConstraints = false
-        
+        tabBarMenuViewTopAnchor = tabBarMenuView.topAnchor.constraint(equalTo: view.topAnchor)
+
         view.addSubview(tabBarMenuView)
-        tabBarMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tabBarMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        tabBarMenuView.topAnchor.constraint(equalTo: tabBarHeaderView.bottomAnchor, constant: 5).isActive = true
-        tabBarMenuView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        NSLayoutConstraint.activate([
+            tabBarMenuViewTopAnchor,
+            tabBarMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tabBarMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tabBarMenuView.heightAnchor.constraint(equalToConstant: 60)
+        ])
     }
     
     func setTabBarPageView() {
         tabBarPageView.delegate = self
         tabBarPageView.dataSource = self
-        tabBarPageView.isPagingEnabled = true
-        tabBarPageView.isScrollEnabled = true
-        tabBarPageView.showsHorizontalScrollIndicator = false
         tabBarPageView.register(TabBarPageCell.self, forCellWithReuseIdentifier: TabBarPageCell.reusableIdentifier)
         
         view.addSubview(tabBarPageView)
-        tabBarPageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tabBarPageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        tabBarPageView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        tabBarPageView.topAnchor.constraint(equalTo: tabBarMenuView.bottomAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            tabBarPageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tabBarPageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tabBarPageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tabBarPageView.topAnchor.constraint(equalTo: tabBarMenuView.bottomAnchor)
+        ])
+    }
+    
+    func setHeaderView(header: UIView) {
+        header.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(header)
+
+        NSLayoutConstraint.activate([
+            header.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            header.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            header.topAnchor.constraint(equalTo: view.topAnchor),
+            header.heightAnchor.constraint(equalToConstant: 180),
+        ])
+        
+        tabBarMenuViewTopAnchor.isActive = false
+        tabBarMenuViewTopAnchor = tabBarMenuView.topAnchor.constraint(equalTo: header.bottomAnchor)
+        tabBarMenuViewTopAnchor.isActive = true
     }
 }
 
-// MARK: TabBarDelegate
+// MARK:- TabBarMenuDelegate
 extension CustomTabBarViewController: CustomTabBarMenuDelegate {
     func tapMenu(to index: Int) {
         let indexPath = IndexPath(item: index, section: 0)
-        tabBarPageView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        self.tabBarPageView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
 }
 
-// MARK: CollectionView
-extension CustomTabBarViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+// MARK:- UIScrollViewDelegate
+extension CustomTabBarViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        tabBarMenuView.tabBarIndicatorViewLeadingConstraint.constant = scrollView.contentOffset.x / CGFloat(numberOfPages)
+    }
+}
+
+// MARK:- UICollectionViewDataSource
+extension CustomTabBarViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numberOfPages
     }
@@ -106,15 +132,18 @@ extension CustomTabBarViewController: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TabBarPageCell.reusableIdentifier, for: indexPath) as? TabBarPageCell else { return UICollectionViewCell() }
         
-        if let vc = self.tabBarViewControllers?[indexPath.item] {
-            self.addChild(vc)
-            cell.contentView.addSubview(vc.view!)
-            vc.view.frame = cell.contentView.bounds
+        if let vc = tabBarViewControllers?[indexPath.item], let viewControllerView = vc.view {
+            addChild(vc)
+            cell.contentView.addSubview(viewControllerView)
+            viewControllerView.frame = cell.contentView.bounds
             vc.didMove(toParent: self)
         }
         return cell
     }
-    
+}
+
+// MARK:- UICollectionViewDelegateFlowLayout
+extension CustomTabBarViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: tabBarPageView.frame.width, height: tabBarPageView.frame.height)
     }
@@ -122,8 +151,5 @@ extension CustomTabBarViewController: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        tabBarMenuView.tabBarIndicatorViewLeadingConstraint.constant = scrollView.contentOffset.x / CGFloat(numberOfPages)
-    }
 }
+

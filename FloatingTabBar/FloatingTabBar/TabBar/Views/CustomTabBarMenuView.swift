@@ -1,8 +1,8 @@
 //
 //  CustomTabBarMenuView.swift
-//  FloatingTabBar
+//  N-Split-Bill
 //
-//  Created by 석상우 on 2021/08/10.
+//  Created by 석상우 on 2021/08/19.
 //
 
 import UIKit
@@ -35,9 +35,10 @@ class CustomTabBarMenuView: UIView {
     var tabBarMenuCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
-        let collectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: 0, height: 0), collectionViewLayout: flowLayout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .white
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
     
@@ -48,12 +49,12 @@ class CustomTabBarMenuView: UIView {
         return view
     }()
     
-    var tabBarIndicatorViewLeadingConstraint: NSLayoutConstraint!
-    var tabBarIndicatorViewWidthConstraint: NSLayoutConstraint!
+    var tabBarIndicatorViewLeadingConstraint: NSLayoutConstraint = NSLayoutConstraint()
+    var tabBarIndicatorViewWidthConstraint: NSLayoutConstraint = NSLayoutConstraint()
     
-    // MARK: Init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    // MARK:  Init
+    init() {
+        super.init(frame: .zero)
         backgroundColor = .white
         setMenuView()
         setIndicatorView()
@@ -62,34 +63,51 @@ class CustomTabBarMenuView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        tabBarIndicatorViewWidthConstraint.constant = frame.width / CGFloat(numberOfTabs)
+    }
     
     // MARK: Set View
     func setMenuView() {
         tabBarMenuCollectionView.delegate = self
         tabBarMenuCollectionView.dataSource = self
-        tabBarMenuCollectionView.showsHorizontalScrollIndicator = false
         tabBarMenuCollectionView.register(TabBarMenuCell.self, forCellWithReuseIdentifier: TabBarMenuCell.reusableIdentifier)
         
         addSubview(tabBarMenuCollectionView)
-        tabBarMenuCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        tabBarMenuCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        tabBarMenuCollectionView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        tabBarMenuCollectionView.heightAnchor.constraint(equalToConstant: 55).isActive = true
+        NSLayoutConstraint.activate([
+            tabBarMenuCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tabBarMenuCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tabBarMenuCollectionView.topAnchor.constraint(equalTo: topAnchor),
+            tabBarMenuCollectionView.heightAnchor.constraint(equalToConstant: 55)
+        ])
     }
     
     func setIndicatorView() {
         addSubview(tabBarIndicatorView)
-        tabBarIndicatorView.heightAnchor.constraint(equalToConstant: 5).isActive = true
-        tabBarIndicatorView.topAnchor.constraint(equalTo: tabBarMenuCollectionView.bottomAnchor).isActive = true
-        tabBarIndicatorViewLeadingConstraint = tabBarIndicatorView.leadingAnchor.constraint(equalTo: self.leadingAnchor)
-        tabBarIndicatorViewLeadingConstraint.isActive = true
-        tabBarIndicatorViewWidthConstraint = tabBarIndicatorView.widthAnchor.constraint(equalToConstant: self.frame.width / CGFloat(numberOfTabs))
-        tabBarIndicatorViewWidthConstraint.isActive = true
+        
+        tabBarIndicatorViewWidthConstraint = tabBarIndicatorView.widthAnchor.constraint(equalToConstant: frame.width / CGFloat(numberOfTabs))
+        tabBarIndicatorViewLeadingConstraint = tabBarIndicatorView.leadingAnchor.constraint(equalTo: leadingAnchor)
+        
+        NSLayoutConstraint.activate([
+            tabBarIndicatorView.heightAnchor.constraint(equalToConstant: 5),
+            tabBarIndicatorView.topAnchor.constraint(equalTo: tabBarMenuCollectionView.bottomAnchor),
+            tabBarIndicatorViewLeadingConstraint,
+            tabBarIndicatorViewWidthConstraint
+        ])
     }
 }
 
-// MARK: CollectionView
-extension CustomTabBarMenuView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+// MARK:- UICollectionViewDelegate
+extension CustomTabBarMenuView: UICollectionViewDelegate  {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.tapMenu(to: indexPath.item)
+    }
+}
+
+// MARK:- UICollectionViewDataSource
+extension CustomTabBarMenuView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numberOfTabs
     }
@@ -106,16 +124,16 @@ extension CustomTabBarMenuView: UICollectionViewDelegate, UICollectionViewDataSo
         }
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.tapMenu(to: indexPath.item)
-    }
-    
+}
+
+// MARK:- UICollectionViewDelegateFlowLayout
+extension CustomTabBarMenuView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.frame.width / CGFloat(numberOfTabs), height: 55)
+        return CGSize(width: frame.width / CGFloat(numberOfTabs), height: 55)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }
+
